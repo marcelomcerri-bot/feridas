@@ -1,6 +1,6 @@
-import { drizzle } from "drizzle-orm/neon-serverless";
+import { drizzle } from "drizzle-orm/postgres-js";
 import { eq } from "drizzle-orm";
-import { Pool } from "@neondatabase/serverless";
+import postgres from "postgres";
 import { type WoundAnalysis, type ComparisonReport, woundAnalyses, comparisonReports } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -14,11 +14,11 @@ export interface IStorage {
 }
 
 class DbStorage implements IStorage {
-  private db: ReturnType<typeof drizzle>;
+  private db: any;
 
   constructor(connectionString: string) {
-    const pool = new Pool({ connectionString });
-    this.db = drizzle(pool);
+    const queryClient = postgres(connectionString);
+    this.db = drizzle(queryClient);
   }
 
   async createWoundAnalysis(analysis: Omit<WoundAnalysis, "id" | "timestamp">): Promise<WoundAnalysis> {

@@ -22,7 +22,7 @@ export default function Home() {
   const analyzeMutation = useMutation({
     mutationFn: async (imageData: string) => {
       const response = await apiRequest("POST", "/api/analyze-wound", { imageData });
-      return response as WoundAnalysis;
+      return (await response.json()) as WoundAnalysis;
     },
     onSuccess: (data) => {
       setAnalysis(data);
@@ -46,7 +46,7 @@ export default function Home() {
         beforeImage: before,
         afterImage: after,
       });
-      return response as ComparisonReport;
+      return (await response.json()) as ComparisonReport;
     },
     onSuccess: (data) => {
       setComparison(data);

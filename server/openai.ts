@@ -21,8 +21,13 @@ export interface WoundAnalysisResult {
 
 export async function analyzeWoundImage(base64Image: string): Promise<WoundAnalysisResult> {
   try {
+    const imageData = base64Image.split(",")[1];
+    if (!imageData) {
+      throw new Error("Invalid base64 image data format");
+    }
+
     const response = await openai.chat.completions.create({
-      model: "gpt-5",
+      model: "gpt-4o",
       messages: [
         {
           role: "system",
@@ -65,7 +70,7 @@ Responda APENAS em formato JSON válido.`,
             {
               type: "image_url",
               image_url: {
-                url: base64Image,
+                url: `data:image/jpeg;base64,${imageData}`,
               },
             },
           ],
@@ -121,8 +126,15 @@ export async function compareWoundImages(
   afterAnalysis: WoundAnalysisResult
 ): Promise<ComparisonAnalysisResult> {
   try {
+    const beforeData = beforeImage.split(",")[1];
+    const afterData = afterImage.split(",")[1];
+
+    if (!beforeData || !afterData) {
+      throw new Error("Invalid base64 image data format for comparison");
+    }
+
     const response = await openai.chat.completions.create({
-      model: "gpt-5",
+      model: "gpt-4o",
       messages: [
         {
           role: "system",
@@ -170,13 +182,13 @@ Retorne em JSON com esta estrutura:
             {
               type: "image_url",
               image_url: {
-                url: beforeImage,
+                url: `data:image/jpeg;base64,${beforeData}`,
               },
             },
             {
               type: "image_url",
               image_url: {
-                url: afterImage,
+                url: `data:image/jpeg;base64,${afterData}`,
               },
             },
           ],

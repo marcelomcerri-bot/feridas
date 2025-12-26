@@ -21,8 +21,6 @@ export interface WoundAnalysisResult {
 
 export async function analyzeWoundImage(base64Image: string): Promise<WoundAnalysisResult> {
   try {
-    const imageData = base64Image.replace(/^data:image\/[a-z]+;base64,/, "");
-
     const response = await openai.chat.completions.create({
       model: "gpt-5",
       messages: [
@@ -67,7 +65,7 @@ Responda APENAS em formato JSON válido.`,
             {
               type: "image_url",
               image_url: {
-                url: `data:image/jpeg;base64,${imageData}`,
+                url: base64Image,
               },
             },
           ],
@@ -123,9 +121,6 @@ export async function compareWoundImages(
   afterAnalysis: WoundAnalysisResult
 ): Promise<ComparisonAnalysisResult> {
   try {
-    const beforeImageData = beforeImage.replace(/^data:image\/[a-z]+;base64,/, "");
-    const afterImageData = afterImage.replace(/^data:image\/[a-z]+;base64,/, "");
-
     const response = await openai.chat.completions.create({
       model: "gpt-5",
       messages: [
@@ -175,13 +170,13 @@ Retorne em JSON com esta estrutura:
             {
               type: "image_url",
               image_url: {
-                url: `data:image/jpeg;base64,${beforeImageData}`,
+                url: beforeImage,
               },
             },
             {
               type: "image_url",
               image_url: {
-                url: `data:image/jpeg;base64,${afterImageData}`,
+                url: afterImage,
               },
             },
           ],

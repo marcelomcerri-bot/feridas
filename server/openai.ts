@@ -74,7 +74,6 @@ Responda APENAS em formato JSON válido.`,
         },
       ],
       response_format: { type: "json_object" },
-      max_completion_tokens: 2048,
     });
 
     const content = response.choices[0].message.content;
@@ -189,7 +188,6 @@ Retorne em JSON com esta estrutura:
         },
       ],
       response_format: { type: "json_object" },
-      max_completion_tokens: 2048,
     });
 
     const content = response.choices[0].message.content;
